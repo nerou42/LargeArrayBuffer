@@ -1,7 +1,6 @@
 # LargeArrayBuffer
 
 [![License](http://poser.pugx.org/nerou/large-array-buffer/license)](https://packagist.org/packages/nerou/large-array-buffer)
-[![PHP Version Require](http://poser.pugx.org/nerou/large-array-buffer/require/php)](https://packagist.org/packages/nerou/large-array-buffer)
 [![Version](http://poser.pugx.org/nerou/large-array-buffer/version)](https://packagist.org/packages/nerou/large-array-buffer)
 
 ## This is for you, if...
@@ -14,6 +13,8 @@ You can still iterate over it as if it was a normal array.
 One typical use case would be to load a lot of datasets from a database at once. (There are reasons to prefer this over running multiple queries.) See *Usage* below for an example for this use case using this library.
 
 ## Install
+
+Note: This library requires PHP 8.0+!
 
 Use composer to install this library:
 
