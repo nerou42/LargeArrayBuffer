@@ -1,0 +1,39 @@
+name: CI
+
+on: 
+  push:
+  pull_request:
+  
+permissions:
+  contents: read
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        php: 
+          - "8.0"
+          - "8.1"
+          - "8.2"
+        experimental: 
+          - false
+
+    name: "Test: PHP ${{ matrix.php }}"
+
+    steps:
+    - uses: actions/checkout@v3
+    - name: Cache Composer dependencies
+      uses: actions/cache@v3
+      with:
+        path: /tmp/composer-cache
+        key: ${{ runner.os }}-${{ hashFiles('**/composer.lock') }}
+    - uses: php-actions/composer@v6
+      with:
+        dev: no
+        php_version: "${{ matrix.php }}"
+    - uses: php-actions/phpunit@v3
+      with:
+        version: 9
+        php_version: "${{ matrix.php }}"
+        args: --coverage-text
