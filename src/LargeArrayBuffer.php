@@ -87,7 +87,7 @@ class LargeArrayBuffer implements \Iterator, \Countable {
    * @throws \RuntimeException if unable to read from php://temp
    */
   public function next(): void {
-    if(feof($this->stream)) {
+    if(feof($this->stream) || $this->count === 0) {   // stream is not initialized before first write
       $this->current = null;
       return;
     }
