@@ -1,0 +1,111 @@
+<?xml version="1.0"?>
+<ruleset xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:noNamespaceSchemaLocation="vendor/squizlabs/php_codesniffer/phpcs.xsd">
+
+    <arg name="basepath" value="."/>
+    <arg name="cache" value=".phpcs-cache"/>
+    <arg name="colors"/>
+    <arg name="extensions" value="php"/>
+    <arg name="parallel" value="10"/>
+    <arg name="encoding" value="utf-8"/>
+    <arg name="tab-width" value="4"/>
+    <!-- Show progress -->
+    <arg value="sp"/>
+
+    <file>src</file>
+    <file>test</file>
+    
+    <rule ref="Generic">
+        <exclude name="Generic.Arrays.ArrayIndent"/>                            <!-- see below -->
+        <exclude name="Generic.Arrays.DisallowShortArraySyntax"/>
+        <exclude name="Generic.CodeAnalysis.AssignmentInCondition.FoundInWhileCondition"/>
+        <exclude name="Generic.CodeAnalysis.EmptyStatement"/>                   <!-- see below -->
+        <exclude name="Generic.CodeAnalysis.JumbledIncrementer"/>
+        <exclude name="Generic.Commenting"/>                                    <!-- see below -->
+        <exclude name="Generic.Files.EndFileNoNewline"/>
+        <exclude name="Generic.Files.LineLength"/>
+        <exclude name="Generic.Files.LowercasedFilename"/>
+        <exclude name="Generic.Formatting.DisallowMultipleStatements"/>
+        <exclude name="Generic.Formatting.MultipleStatementAlignment.NotSameWarning"/>
+        <exclude name="Generic.Formatting.NoSpaceAfterCast"/>
+        <exclude name="Generic.Formatting.SpaceBeforeCast"/>
+        <exclude name="Generic.Functions.OpeningFunctionBraceBsdAllman"/>
+        <exclude name="Generic.Metrics.CyclomaticComplexity"/>                  <!-- see below -->
+        <exclude name="Generic.NamingConventions.AbstractClassNamePrefix"/>
+        <exclude name="Generic.NamingConventions.CamelCapsFunctionName"/>
+        <exclude name="Generic.NamingConventions.InterfaceNameSuffix"/>
+        <exclude name="Generic.NamingConventions.TraitNameSuffix"/>
+        <exclude name="Generic.PHP.ClosingPHPTag"/>
+        <exclude name="Generic.PHP.UpperCaseConstant"/>
+        <exclude name="Generic.Strings.UnnecessaryStringConcat"/>
+        <exclude name="Generic.WhiteSpace.DisallowSpaceIndent"/>
+        <exclude name="Generic.WhiteSpace.ScopeIndent"/>                        <!-- see below -->
+        
+        <!-- temporary -->
+        <exclude name="Generic.CodeAnalysis.UnusedFunctionParameter"/>
+        <exclude name="Generic.Metrics.NestingLevel"/>
+    </rule>
+    <rule ref="Generic.Arrays.ArrayIndent">
+        <properties>
+            <property name="indent" value="4"/>
+        </properties>
+        <type>warning</type>
+    </rule>
+    <rule ref="Generic.CodeAnalysis.EmptyStatement">
+        <type>warning</type>
+    </rule>
+    <rule ref="Generic.Commenting">
+        <type>warning</type>
+    </rule>
+    <rule ref="Generic.Formatting.SpaceAfterNot">
+        <properties>
+            <property name="spacing" value="0"/>
+        </properties>
+    </rule>
+    <rule ref="Generic.Metrics.CyclomaticComplexity">
+        <type>warning</type>
+        <severity>2</severity>
+    </rule>
+    <rule ref="Generic.WhiteSpace.ScopeIndent">
+        <properties>
+            <property name="indent" value="4"/>
+            <property name="tabIndent" value="false"/>
+        </properties>
+    </rule>
+    
+    <rule ref="PSR1"/>
+    
+    <rule ref="PSR12.Classes">
+        <exclude name="PSR12.Classes.OpeningBraceSpace"/>
+        <exclude name="PSR12.Classes.AnonClassDeclaration"/>
+    </rule>
+    <rule ref="PSR12.Functions"/>
+    <rule ref="PSR12.Keywords"/>
+    <rule ref="PSR12.Namespaces"/>
+    
+    <rule ref="PEAR.Commenting.InlineComment"/>
+    <rule ref="PEAR.Functions.ValidDefaultValue"/>
+    <rule ref="PEAR.WhiteSpace.ObjectOperatorIndent">
+        <properties>
+            <property name="indent" value="2"/>
+        </properties>
+    </rule>
+    
+    <rule ref="Squiz.Arrays.ArrayBracketSpacing"/>
+    <rule ref="Squiz.Classes.LowercaseClassKeywords"/>
+    <rule ref="Squiz.Classes.SelfMemberReference"/>
+    <rule ref="Squiz.Commenting.DocCommentAlignment"/>
+    <rule ref="Squiz.Commenting.FunctionCommentThrowTag"/>
+    <rule ref="Squiz.ControlStructures.ForEachLoopDeclaration"/>
+    <rule ref="Squiz.ControlStructures.LowercaseDeclaration"/>
+    <rule ref="Squiz.Functions.FunctionDuplicateArgument"/>
+    <rule ref="Squiz.Functions.FunctionDuplicateArgument"/>
+    <rule ref="Squiz.Functions.LowercaseFunctionKeywords"/>
+    <rule ref="Squiz.Scope.StaticThisUsage"/>
+    <rule ref="Squiz.Strings.DoubleQuoteUsage"/>
+    <rule ref="Squiz.Strings.EchoedStrings"/>
+    <rule ref="Squiz.WhiteSpace.CastSpacing"/>
+    <rule ref="Squiz.WhiteSpace.LanguageConstructSpacing"/>
+    <rule ref="Squiz.WhiteSpace.ScopeKeywordSpacing"/>
+    <rule ref="Squiz.WhiteSpace.SemicolonSpacing"/>
+</ruleset>

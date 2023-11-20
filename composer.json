@@ -1,0 +1,58 @@
+{
+    "name": "nerou/large-array-buffer",
+    "type": "library",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Andreas Wahlen",
+            "email": "andreas.wahlen@nerou.de",
+            "role": "Developer",
+            "homepage": "https://www.nerou.de"
+        }
+    ],
+    "suggest": {
+        "ext-json": "Requirement of toJSONFile() method"
+    },
+    "require": {
+        "php": ">=8.0 <8.4"
+    },
+    "require-dev": {
+        "squizlabs/php_codesniffer": ">=3.7"
+    },
+    "prefer-stable": true,
+    "autoload": {
+        "psr-4": {
+            "LargeArrayBuffer\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "LargeArrayBuffer\\Tests\\": "test/"
+        }
+    },
+    "scripts": {
+        "phpcs": "./vendor/bin/phpcs",
+        "phpcbf": "./vendor/bin/phpcbf",
+        "phpunit": "./tools/phpunit test",
+        "phpcpd": "./tools/phpcpd src",
+        "psalm": "./tools/psalm --no-diff --use-baseline=psalm.baseline.xml --php-version=8.0",
+        "psalm-stats": "./tools/psalm --no-diff --use-baseline=psalm.baseline.xml --php-version=8.0 --stats | grep -v 100",
+        "update-psalm-baseline": "./tools/psalm --no-diff --set-baseline=psalm.baseline.xml",
+        "tests": [
+            "@phpcs",
+            "@phpunit",
+            "@phpcpd",
+            "@psalm"
+        ]
+    },
+    "scripts-descriptions": {
+        "phpcs": "Runs CodeSniffer for coding style tests.", 
+        "phpcbf": "Fixes marked violations found by phpcs/CodeSniffer.",
+        "phpunit": "Runs unit/integration tests.",
+        "phpcpd": "Runs copied code finder.",
+        "psalm": "Runs static analysis.",
+        "psalm-stats": "Print files with unsafe types based on psalm.",
+        "update-psalm-baseline": "Updates baseline for psalm. CAUTION should not be run as a regular procedure!",
+        "tests": "Runs all available tests."
+    }
+}

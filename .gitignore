@@ -1,0 +1,10 @@
+/.buildpath
+/.project
+/.settings
+
+/.phpunit.result.cache
+/.phpcs-cache
+
+/composer.lock
+/vendor
+/tools
