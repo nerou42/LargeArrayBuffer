@@ -46,9 +46,9 @@ jobs:
           - "8.2"
         experimental: 
           - false
-        include: 
-          - php: "8.3"
-            experimental: true
+        #include: 
+        #  - php: "8.3"
+        #    experimental: true
 
     name: "Test: PHP ${{ matrix.php }}"
     continue-on-error: ${{ matrix.experimental }}
