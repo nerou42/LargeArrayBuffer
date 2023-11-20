@@ -8,6 +8,34 @@ permissions:
   contents: read
 
 jobs:
+  coding-standard:
+    runs-on: ubuntu-latest
+    name: Coding Standard
+    
+    steps:
+      - uses: actions/checkout@v3
+      - name: Cache Composer dependencies
+        uses: actions/cache@v3
+        with:
+          path: /tmp/composer-cache
+          key: ${{ runner.os }}-${{ hashFiles('**/composer.lock') }}
+      - uses: php-actions/composer@v6
+        with:
+          php_version: "8.0"
+      - name: Check coding standard
+        run: composer phpcs
+    
+  static-analysis:
+    runs-on: ubuntu-latest
+    name: Static Analysis
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Psalm
+        uses: docker://ghcr.io/psalm/psalm-github-actions
+    
   test:
     runs-on: ubuntu-latest
     strategy:
@@ -18,22 +46,26 @@ jobs:
           - "8.2"
         experimental: 
           - false
+        include: 
+          - php: "8.3"
+            experimental: true
 
     name: "Test: PHP ${{ matrix.php }}"
+    continue-on-error: ${{ matrix.experimental }}
 
     steps:
-    - uses: actions/checkout@v3
-    - name: Cache Composer dependencies
-      uses: actions/cache@v3
-      with:
-        path: /tmp/composer-cache
-        key: ${{ runner.os }}-${{ hashFiles('**/composer.lock') }}
-    - uses: php-actions/composer@v6
-      with:
-        dev: no
-        php_version: "${{ matrix.php }}"
-    - uses: php-actions/phpunit@v3
-      with:
-        version: 9
-        php_version: "${{ matrix.php }}"
-        args: --coverage-text
+      - uses: actions/checkout@v3
+      - name: Cache Composer dependencies
+        uses: actions/cache@v3
+        with:
+          path: /tmp/composer-cache
+          key: ${{ runner.os }}-${{ hashFiles('**/composer.lock') }}
+      - uses: php-actions/composer@v6
+        with:
+          dev: no
+          php_version: "${{ matrix.php }}"
+      - uses: php-actions/phpunit@v3
+        with:
+          version: 9
+          php_version: "${{ matrix.php }}"
+          args: --coverage-text
