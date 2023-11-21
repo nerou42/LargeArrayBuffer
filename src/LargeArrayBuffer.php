@@ -112,6 +112,9 @@ class LargeArrayBuffer implements \Iterator, \Countable {
     if($line === false) {
       throw new \RuntimeException('could not read line from php://temp');
     }
+    if(strrpos($line, "\n") === strlen($line) - 1){
+      $line = substr($line, 0, strlen($line) - 1);  // cut off line break
+    }
     $compressed = stripcslashes($line);
     /** @var string|false $serialized */
     $serialized = match($this->compression){
