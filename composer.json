@@ -12,7 +12,8 @@
         }
     ],
     "suggest": {
-        "ext-json": "Requirement of toJSONFile() method"
+        "ext-json": "Requirement of toJSONFile() method",
+        "ext-lz4": "To enable support of LZ4 compression"
     },
     "require": {
         "php": ">=8.0 <8.4"

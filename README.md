@@ -20,8 +20,10 @@ Use composer to install this library:
 
 `composer require nerou/large-array-buffer`
 
-There are pretty much no dependencies with a single exception:
-If you want to use the `toJSONFile()` method, you need to install `ext-json` (PHP's PECL JSON extension) as well.
+There are pretty much no dependencies with some exceptions:
+
+- If you want to use the `toJSONFile()` method, you need to install `ext-json` (PHP's PECL JSON extension) as well.
+- If you want to use LZ4 compression, `ext-lz4` is required. See [php-ext-lz4](https://github.com/kjdev/php-ext-lz4).
 
 ## Usage
 
@@ -46,7 +48,7 @@ The constructor of `LargeArrayBuffer` provides some options:
 
 1. You can set the threshold when to move the data to disk. When pushing data to the buffer, it is stored in memory until it gets too large.
     E.g.: `new LargeArrayBuffer(512);` to set a 512 MiB threshold. 
-1. You can enable GZIP compression for the serialized items. Although this is recommended only if your items are pretty big like > 1 KiB each. `new LargeArrayBuffer(compression: LargeArrayBuffer::COMPRESSION_GZIP);`
+1. You can enable GZIP or LZ4 compression for the serialized items. Although this is recommended only if your items are pretty big like > 1 KiB each. E.g.: `new LargeArrayBuffer(compression: LargeArrayBuffer::COMPRESSION_GZIP);`. Note, that LZ4 compression requires [ext-lz4](https://github.com/kjdev/php-ext-lz4) to be installed.
 
 ### Read from the buffer
 
@@ -84,6 +86,8 @@ A benchmark with 1 million measurements (consisting of DateTimeImmutable, int an
 | Iterate over array | 0.14 s | 478 MiB | NA |
 | Fill buffer | 10.43 s | 0 B | 378.7 MiB |
 | Iterate over buffer | 4.67 s | 0 B | 378.7 MiB |
+| Fill buffer (GZIP) | 31.6 s | 0 B | 192.5 MiB |
+| Iterate over buffer (GZIP) | 8.95 s | 192.5 MiB |
 
 Note: 
 

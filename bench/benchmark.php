@@ -6,8 +6,9 @@
 declare(strict_types=1);
 
 use LargeArrayBuffer\Benchmarks\LargeArrayBufferBench;
-use LargeArrayBuffer\Benchmarks\Items\Measurement;
 use LargeArrayBuffer\LargeArrayBuffer;
+
+require_once dirname(__DIR__).'/vendor/autoload.php';
 
 define('ITERATIONS', 10);
 define('ARRAY_SIZE', 1_000_000);
@@ -34,12 +35,11 @@ function printResult(string $label, array $metrics, string $key, int $tabs = 1, 
       PHP_EOL;
 }
 
-require_once dirname(__DIR__).'/vendor/autoload.php';
-
 $metrics = [];
 for($i = 0; $i < ITERATIONS; $i++){
   $bench = new LargeArrayBufferBench(ARRAY_SIZE);
   
+  // normal array
   $start = microtime(true);
   $memBefore = memory_get_usage(true);
   $arr = $bench->arrayMeasurementsFill();
@@ -56,12 +56,11 @@ for($i = 0; $i < ITERATIONS; $i++){
   ];
   unset($arr);
   
+  // normal buffer
   $start = microtime(true);
   $memBefore = memory_get_usage(true);
   $buf = new LargeArrayBuffer(256);
   $bench->bufferMeasurementsFill($buf);
-  $time = microtime(true) - $start;
-  $mem = memory_get_usage(true) - $memBefore;
   $metrics['fill_buffer'][] = [
     'time' => microtime(true) - $start,
     'mem' => memory_get_usage(true) - $memBefore,
@@ -70,9 +69,47 @@ for($i = 0; $i < ITERATIONS; $i++){
   
   $start = microtime(true);
   $bench->bufferMeasurementsIterate($buf);
-  $time = microtime(true) - $start;
-  $mem = memory_get_usage(true) - $memBefore;
   $metrics['iterate_buffer'][] = [
+    'time' => microtime(true) - $start,
+    'mem' => memory_get_usage(true) - $memBefore,
+    'size' => $buf->getSize()
+  ];
+  unset($buf);
+  
+  // buffer with GZIP
+  $start = microtime(true);
+  $memBefore = memory_get_usage(true);
+  $buf = new LargeArrayBuffer(256, compression: LargeArrayBuffer::COMPRESSION_GZIP);
+  $bench->bufferMeasurementsFill($buf);
+  $metrics['fill_buffer_gz'][] = [
+    'time' => microtime(true) - $start,
+    'mem' => memory_get_usage(true) - $memBefore,
+    'size' => $buf->getSize()
+  ];
+  
+  $start = microtime(true);
+  $bench->bufferMeasurementsIterate($buf);
+  $metrics['iterate_buffer_gz'][] = [
+    'time' => microtime(true) - $start,
+    'mem' => memory_get_usage(true) - $memBefore,
+    'size' => $buf->getSize()
+  ];
+  unset($buf);
+  
+  // buffer with LZ4
+  $start = microtime(true);
+  $memBefore = memory_get_usage(true);
+  $buf = new LargeArrayBuffer(256, compression: LargeArrayBuffer::COMPRESSION_LZ4);
+  $bench->bufferMeasurementsFill($buf);
+  $metrics['fill_buffer_lz4'][] = [
+    'time' => microtime(true) - $start,
+    'mem' => memory_get_usage(true) - $memBefore,
+    'size' => $buf->getSize()
+  ];
+  
+  $start = microtime(true);
+  $bench->bufferMeasurementsIterate($buf);
+  $metrics['iterate_buffer_lz4'][] = [
     'time' => microtime(true) - $start,
     'mem' => memory_get_usage(true) - $memBefore,
     'size' => $buf->getSize()
@@ -82,7 +119,11 @@ for($i = 0; $i < ITERATIONS; $i++){
   unset($bench);
 }
 
-printResult('Fill array', $metrics, 'fill_array', 2);
-printResult('Iterate over array', $metrics, 'iterate_array', 1);
-printResult('Fill buffer', $metrics, 'fill_buffer', 2, true);
-printResult('Iterate over buffer', $metrics, 'iterate_buffer', 1, true);
+printResult('Fill array', $metrics, 'fill_array', 3);
+printResult('Iterate over array', $metrics, 'iterate_array', 2);
+printResult('Fill buffer', $metrics, 'fill_buffer', 3, true);
+printResult('Iterate over buffer', $metrics, 'iterate_buffer', 2, true);
+printResult('Fill buffer (GZIP)', $metrics, 'fill_buffer_gz', 2, true);
+printResult('Iterate over buffer (GZIP)', $metrics, 'iterate_buffer_gz', 1, true);
+printResult('Fill buffer (LZ4)', $metrics, 'fill_buffer_lz4', 2, true);
+printResult('Iterate over buffer (LZ4)', $metrics, 'iterate_buffer_lz4', 1, true);

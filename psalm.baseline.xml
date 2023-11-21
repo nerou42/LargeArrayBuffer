@@ -1,4 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<files psalm-version="5.12.0@f90118cdeacd0088e7215e64c0c99ceca819e176">
-  
+<files psalm-version="5.15.0@5c774aca4746caf3d239d9c8cadb9f882ca29352">
+  <file src="src/LargeArrayBuffer.php">
+    <UndefinedFunction>
+      <code>lz4_compress($serialized)</code>
+      <code>lz4_uncompress($compressed)</code>
+    </UndefinedFunction>
+  </file>
 </files>

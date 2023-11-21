@@ -16,6 +16,7 @@ class LargeArrayBuffer implements \Iterator, \Countable {
 
   public const COMPRESSION_NONE = 0;
   public const COMPRESSION_GZIP = 1;
+  public const COMPRESSION_LZ4 = 2;
 
   /**
    * @readonly
@@ -50,11 +51,16 @@ class LargeArrayBuffer implements \Iterator, \Countable {
    * @param int $maxMemoryMiB maximum memory usage in MiB, when more data is pushed, disk space is used
    * @psalm-param self::SERIALIZER_* $serializer
    * @psalm-param self::COMPRESSION_* $compression
+   * @throws \InvalidArgumentException if an unsupported compression or serialization was requested
    * @throws \RuntimeException if php://temp could not be opened
    */
   public function __construct(int $maxMemoryMiB = 1024, int $serializer = self::SERIALIZER_PHP, int $compression = self::COMPRESSION_NONE) {
     $this->serializer = $serializer;
     $this->compression = $compression;
+    if($this->compression === self::COMPRESSION_LZ4 && !function_exists('lz4_compress')){
+      throw new \InvalidArgumentException('LZ4 compression was requested, but ext-lz4 is not installed');
+    }
+      
     $stream = fopen('php://temp/maxmemory:'.($maxMemoryMiB * 1024 * 1024), 'r+');
     if($stream === false) {
       throw new \RuntimeException('failed to open php://temp file descriptor');
@@ -73,6 +79,7 @@ class LargeArrayBuffer implements \Iterator, \Countable {
     };
     $compressed = match($this->compression){
       self::COMPRESSION_GZIP => gzdeflate($serialized),
+      self::COMPRESSION_LZ4 => lz4_compress($serialized),
       default => $serialized
     };
     $res = fwrite($this->stream, addcslashes($compressed, "\\\r\n")."\n");
@@ -104,6 +111,7 @@ class LargeArrayBuffer implements \Iterator, \Countable {
     $compressed = stripcslashes($line);
     $this->current = match($this->compression){
       self::COMPRESSION_GZIP => gzinflate($compressed),
+      self::COMPRESSION_LZ4 => lz4_uncompress($compressed),
       default => $compressed
     };
     $this->index++;
