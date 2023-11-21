@@ -6,7 +6,7 @@ namespace LargeArrayBuffer;
 /**
  * @author Andreas Wahlen
  * @template E of object|array|scalar|null
- * @implements \Iterator<int, E>
+ * @implements \Iterator<int<0, max>, E>
  * @psalm-suppress TooManyTemplateParams
  */
 class LargeArrayBuffer implements \Iterator, \Countable {
@@ -34,8 +34,14 @@ class LargeArrayBuffer implements \Iterator, \Countable {
    */
   private $stream;
 
+  /**
+   * @var int<0, max>
+   */
   private int $count = 0;
 
+  /**
+   * @var int<0, max>
+   */
   private int $index = 0;
 
   private ?string $current = null;
@@ -111,12 +117,20 @@ class LargeArrayBuffer implements \Iterator, \Countable {
     if($this->current === null) {
       throw new \RuntimeException('index out of bounds (you might want to call next() and/or valid() before!)');
     }
-    return match($this->serializer){
+    /** @psalm-var E $res */
+    $res = match($this->serializer){
       //self::SERIALIZER_JSON => json_decode($this->current, flags: JSON_THROW_ON_ERROR),
       default => unserialize($this->current)
     };
+    return $res;
   }
 
+  /**
+   * {@inheritDoc}
+   * @see \Iterator::key()
+   * @psalm-return int<-1, max>
+   * @psalm-mutation-free
+   */
   public function key(): int {
     return $this->index - 1;
   }
@@ -130,11 +144,18 @@ class LargeArrayBuffer implements \Iterator, \Countable {
 
   /**
    * @return int|null size in bytes or null if unknown
+   * @psalm-mutation-free
    */
   public function getSize(): ?int {
     return fstat($this->stream)['size'] ?? null;
   }
 
+  /**
+   * {@inheritDoc}
+   * @see \Countable::count()
+   * @psalm-return int<0, max>
+   * @psalm-mutation-free
+   */
   public function count(): int {
     return $this->count;
   }

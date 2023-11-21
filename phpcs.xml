@@ -87,7 +87,7 @@
     <rule ref="PEAR.Functions.ValidDefaultValue"/>
     <rule ref="PEAR.WhiteSpace.ObjectOperatorIndent">
         <properties>
-            <property name="indent" value="2"/>
+            <property name="indent" value="4"/>
         </properties>
     </rule>
     

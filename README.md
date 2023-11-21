@@ -48,7 +48,7 @@ The constructor of `LargeArrayBuffer` provides some options:
     E.g.: `new LargeArrayBuffer(512);` to set a 512 MiB threshold. 
 1. You can enable GZIP compression for the serialized items. Although this is recommended only if your items are pretty big like > 1 KiB each. `new LargeArrayBuffer(compression: LargeArrayBuffer::COMPRESSION_GZIP);`
 
-### Read your data from the buffer
+### Read from the buffer
 
 There are several options to read the data:
 
@@ -67,6 +67,31 @@ There are some stats you can obtain:
 ## How it works
 
 To put it in one sentence: This library uses [php://temp](https://www.php.net/manual/en/wrappers.php.php) as well as PHP's [serialize](https://www.php.net/manual/en/function.serialize.php)/[unserialize](https://www.php.net/manual/en/function.unserialize.php) functions to store an array on disk if it gets too large. 
+
+## Limitations and concerns
+
+- associative arrays are not supported
+- the item type needs to be compatible with PHP's [serialize](https://www.php.net/manual/en/function.serialize.php)/[unserialize](https://www.php.net/manual/en/function.unserialize.php) functions
+- since storage drives (even PCIe SSDs) are a lot slower than memory and de-/serialization needs to be done, you trade hard memory overflows for performance losses
+
+### Benchmark
+
+A benchmark with 1 million measurements (consisting of DateTimeImmutable, int and float) using PHP 8.2 with 10 iterations comparing a normal array with the LargeArrayBuffer gave the following results (LargeArrayBuffer was configured with a memory limit of 256 MiB):
+
+| Action | Consumed time | Consumed memory | Buffer size |
+|--------|---------------|-----------------|-------------|
+| Fill array | 1.65 s | 476 MiB | NA |
+| Iterate over array | 0.14 s | 478 MiB | NA |
+| Fill buffer | 10.43 s | 0 B | 378.7 MiB |
+| Iterate over buffer | 4.67 s | 0 B | 378.7 MiB |
+
+Note: 
+
+- The peak memory usage using the buffer is about its memory limit. The table shows the memory usage after the specified action.
+- PHP seems to cache the array once it is created for the first time, although `unset` is used. That is why I have not put the average value in the table for this specific value but the maximum (first run).
+- The serialized data is smaller than the binary data in memory. I have absolutly no idea why.
+
+To reproduce call bench/benchmark.php. 
 
 ## License
 
