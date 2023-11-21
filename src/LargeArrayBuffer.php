@@ -128,11 +128,11 @@ class LargeArrayBuffer implements \Iterator, \Countable {
   /**
    * {@inheritDoc}
    * @see \Iterator::key()
-   * @psalm-return int<-1, max>
+   * @psalm-return int<0, max>
    * @psalm-mutation-free
    */
   public function key(): int {
-    return $this->index - 1;
+    return max(0, $this->index - 1);
   }
 
   public function valid(): bool {
