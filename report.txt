@@ -1,5 +1,0 @@
-C:\Users\andre\Informatik\Projects\nerou\LargeArrayBuffer\src\LargeArrayBuffer.php:80:5:warning - MixedAssignment: Unable to determine the type that $compressed is being assigned to
-C:\Users\andre\Informatik\Projects\nerou\LargeArrayBuffer\src\LargeArrayBuffer.php:82:32:warning - UndefinedFunction: Function LargeArrayBuffer\lz4_compress does not exist
-C:\Users\andre\Informatik\Projects\nerou\LargeArrayBuffer\src\LargeArrayBuffer.php:85:46:warning - MixedArgument: Argument 1 of addcslashes cannot be false|mixed|string, expecting string
-C:\Users\andre\Informatik\Projects\nerou\LargeArrayBuffer\src\LargeArrayBuffer.php:112:5:warning - MixedAssignment: Unable to determine the type that $this->current is being assigned to
-C:\Users\andre\Informatik\Projects\nerou\LargeArrayBuffer\src\LargeArrayBuffer.php:114:32:warning - UndefinedFunction: Function LargeArrayBuffer\lz4_uncompress does not exist

@@ -6,5 +6,6 @@
 /psalm.baseline.xml       export-ignore
 /.phive                   export-ignore
 /test                     export-ignore
+/bench                    export-ignore
 
 *.php                     text eol=lf

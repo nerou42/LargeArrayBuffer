@@ -11,6 +11,15 @@ use PHPUnit\Framework\TestCase;
  */
 class LargeArrayBufferTest extends TestCase {
   
+  private function getObject(): object {
+    $o = new \stdClass();
+    $o->foo = 'hello world!'.PHP_EOL;
+    $o->bar = new \DateTimeImmutable();
+    $o->a = ['test', 123];
+    $o->str = 'hello world!\\n';
+    return $o;
+  }
+  
   public function testEmpty(): void {
     $buf = new LargeArrayBuffer();
     $runs = 0;
@@ -23,16 +32,11 @@ class LargeArrayBufferTest extends TestCase {
   }
   
   public function provideObject(): array {
-    $o = new \stdClass();
-    $o->foo = 'hello world!'.PHP_EOL;
-    $o->bar = new \DateTimeImmutable();
-    $o->a = ['test', 123];
-    $o->str = 'hello world!\\n';
+    $o = $this->getObject();
     return [
       [$o, LargeArrayBuffer::SERIALIZER_PHP, LargeArrayBuffer::COMPRESSION_NONE],
       //[$o, LargeArrayBuffer::SERIALIZER_JSON, LargeArrayBuffer::COMPRESSION_NONE],
-      [$o, LargeArrayBuffer::SERIALIZER_PHP, LargeArrayBuffer::COMPRESSION_GZIP],
-      //[$o, LargeArrayBuffer::SERIALIZER_JSON, LargeArrayBuffer::COMPRESSION_GZIP],
+      [$o, LargeArrayBuffer::SERIALIZER_PHP, LargeArrayBuffer::COMPRESSION_GZIP]
     ];
   }
   
@@ -41,6 +45,18 @@ class LargeArrayBufferTest extends TestCase {
    */
   public function testReadWrite(object $o, int $serializer, int $compression): void {
     $buf = new LargeArrayBuffer(serializer: $serializer, compression: $compression);
+    $buf->push($o);
+    $buf->rewind();
+    $buf->next();
+    $this->assertEquals($o, $buf->current());
+  }
+  
+  /**
+   * @requires extension lz4
+   */
+  public function testReadWriteLZ4(): void {
+    $o = $this->getObject();
+    $buf = new LargeArrayBuffer(compression: LargeArrayBuffer::COMPRESSION_LZ4);
     $buf->push($o);
     $buf->rewind();
     $buf->next();

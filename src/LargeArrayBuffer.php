@@ -77,11 +77,15 @@ class LargeArrayBuffer implements \Iterator, \Countable {
       //self::SERIALIZER_JSON => json_encode($item, JSON_THROW_ON_ERROR),
       default => serialize($item)
     };
+    /** @var string|false $compressed */
     $compressed = match($this->compression){
       self::COMPRESSION_GZIP => gzdeflate($serialized),
       self::COMPRESSION_LZ4 => lz4_compress($serialized),
       default => $serialized
     };
+    if($compressed === false){
+      throw new \RuntimeException('failed to compress data');
+    }
     $res = fwrite($this->stream, addcslashes($compressed, "\\\r\n")."\n");
     if($res === false){
       throw new \RuntimeException('could not write to php://temp');
@@ -109,11 +113,16 @@ class LargeArrayBuffer implements \Iterator, \Countable {
       throw new \RuntimeException('could not read line from php://temp');
     }
     $compressed = stripcslashes($line);
-    $this->current = match($this->compression){
+    /** @var string|false $serialized */
+    $serialized = match($this->compression){
       self::COMPRESSION_GZIP => gzinflate($compressed),
       self::COMPRESSION_LZ4 => lz4_uncompress($compressed),
       default => $compressed
     };
+    if($serialized === false){
+      throw new \RuntimeException('failed to uncompress data');
+    }
+    $this->current = $serialized;
     $this->index++;
   }
 

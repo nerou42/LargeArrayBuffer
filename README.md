@@ -81,13 +81,13 @@ To put it in one sentence: This library uses [php://temp](https://www.php.net/ma
 A benchmark with 1 million measurements (consisting of DateTimeImmutable, int and float) using PHP 8.2 with 10 iterations comparing a normal array with the LargeArrayBuffer gave the following results (LargeArrayBuffer was configured with a memory limit of 256 MiB):
 
 | Action | Consumed time | Consumed memory | Buffer size |
-|--------|---------------|-----------------|-------------|
+| :--- | ---: | ---: | ---: |
 | Fill array | 1.65 s | 476 MiB | NA |
 | Iterate over array | 0.14 s | 478 MiB | NA |
 | Fill buffer | 10.43 s | 0 B | 378.7 MiB |
 | Iterate over buffer | 4.67 s | 0 B | 378.7 MiB |
 | Fill buffer (GZIP) | 31.6 s | 0 B | 192.5 MiB |
-| Iterate over buffer (GZIP) | 8.95 s | 192.5 MiB |
+| Iterate over buffer (GZIP) | 8.95 s | 0 B | 192.5 MiB |
 
 Note: 
 
