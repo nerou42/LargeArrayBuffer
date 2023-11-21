@@ -11,6 +11,17 @@ use PHPUnit\Framework\TestCase;
  */
 class LargeArrayBufferTest extends TestCase {
   
+  public function testEmpty(): void {
+    $buf = new LargeArrayBuffer();
+    $runs = 0;
+    foreach($buf as $item){
+      $runs++;
+      $item;
+    }
+    $this->assertEquals(0, $buf->count());
+    $this->assertEquals(0, $runs);
+  }
+  
   public function provideObject(): array {
     $o = new \stdClass();
     $o->foo = 'hello world!'.PHP_EOL;
