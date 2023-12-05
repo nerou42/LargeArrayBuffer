@@ -35,8 +35,7 @@ class LargeArrayBufferTest extends TestCase {
     $o = $this->getObject();
     return [
       [$o, LargeArrayBuffer::SERIALIZER_PHP, LargeArrayBuffer::COMPRESSION_NONE],
-      //[$o, LargeArrayBuffer::SERIALIZER_JSON, LargeArrayBuffer::COMPRESSION_NONE],
-      [$o, LargeArrayBuffer::SERIALIZER_PHP, LargeArrayBuffer::COMPRESSION_GZIP]
+      [$o, LargeArrayBuffer::SERIALIZER_PHP, LargeArrayBuffer::COMPRESSION_GZIP],
     ];
   }
   
@@ -45,6 +44,18 @@ class LargeArrayBufferTest extends TestCase {
    */
   public function testReadWrite(object $o, int $serializer, int $compression): void {
     $buf = new LargeArrayBuffer(serializer: $serializer, compression: $compression);
+    $buf->push($o);
+    $buf->rewind();
+    $buf->next();
+    $this->assertEquals($o, $buf->current());
+  }
+  
+  /**
+   * @requires extension igbinary
+   */
+  public function testReadWriteIgbinary(): void {
+    $o = $this->getObject();
+    $buf = new LargeArrayBuffer(serializer: LargeArrayBuffer::SERIALIZER_IGBINARY);
     $buf->push($o);
     $buf->rewind();
     $buf->next();

@@ -12,7 +12,7 @@ namespace LargeArrayBuffer;
 class LargeArrayBuffer implements \Iterator, \Countable {
 
   public const SERIALIZER_PHP = 1;
-  //public const SERIALIZER_JSON = 2;
+  public const SERIALIZER_IGBINARY = 2;
 
   public const COMPRESSION_NONE = 0;
   public const COMPRESSION_GZIP = 1;
@@ -51,11 +51,16 @@ class LargeArrayBuffer implements \Iterator, \Countable {
    * @param int $maxMemoryMiB maximum memory usage in MiB, when more data is pushed, disk space is used
    * @psalm-param self::SERIALIZER_* $serializer
    * @psalm-param self::COMPRESSION_* $compression
-   * @throws \InvalidArgumentException if an unsupported compression or serialization was requested
+   * @throws \InvalidArgumentException if an unsupported serialization was requested
+   * @throws \InvalidArgumentException if an unsupported compression was requested
    * @throws \RuntimeException if php://temp could not be opened
    */
   public function __construct(int $maxMemoryMiB = 1024, int $serializer = self::SERIALIZER_PHP, int $compression = self::COMPRESSION_NONE) {
     $this->serializer = $serializer;
+    if($this->serializer === self::SERIALIZER_IGBINARY && !function_exists('igbinary_serialize')){
+      throw new \InvalidArgumentException('igbinary serializer was requested, but ext-igbinary is not installed');
+    }
+      
     $this->compression = $compression;
     if($this->compression === self::COMPRESSION_LZ4 && !function_exists('lz4_compress')){
       throw new \InvalidArgumentException('LZ4 compression was requested, but ext-lz4 is not installed');
@@ -74,7 +79,7 @@ class LargeArrayBuffer implements \Iterator, \Countable {
    */
   public function push(mixed $item): void {
     $serialized = match($this->serializer){
-      //self::SERIALIZER_JSON => json_encode($item, JSON_THROW_ON_ERROR),
+      self::SERIALIZER_IGBINARY => igbinary_serialize($item),
       default => serialize($item)
     };
     /** @var string|false $compressed */
@@ -139,7 +144,7 @@ class LargeArrayBuffer implements \Iterator, \Countable {
     }
     /** @psalm-var E $res */
     $res = match($this->serializer){
-      //self::SERIALIZER_JSON => json_decode($this->current, flags: JSON_THROW_ON_ERROR),
+      self::SERIALIZER_IGBINARY => igbinary_unserialize($this->current),
       default => unserialize($this->current)
     };
     return $res;

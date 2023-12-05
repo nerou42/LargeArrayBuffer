@@ -23,6 +23,7 @@ Use composer to install this library:
 There are pretty much no dependencies with some exceptions:
 
 - If you want to use the `toJSONFile()` method, you need to install `ext-json` (PHP's PECL JSON extension) as well.
+- If you want to use the igbinary serializer, `ext-igbinary` is required. See [php-ext-igbinary](https://github.com/igbinary/igbinary).
 - If you want to use LZ4 compression, `ext-lz4` is required. See [php-ext-lz4](https://github.com/kjdev/php-ext-lz4).
 
 ## Usage
@@ -48,6 +49,8 @@ The constructor of `LargeArrayBuffer` provides some options:
 
 1. You can set the threshold when to move the data to disk. When pushing data to the buffer, it is stored in memory until it gets too large.
     E.g.: `new LargeArrayBuffer(512);` to set a 512 MiB threshold. 
+1. You can choose either the PHP serializer or the [igbinary](https://github.com/igbinary/igbinary) serializer (PHP serializer is default).
+    E.g.: `new LargeArrayBuffer(serializer: LargeArrayBuffer::COMPRESSION_IGBINARY);`
 1. You can enable GZIP or LZ4 compression for the serialized items. Although this is recommended only if your items are pretty big like > 1 KiB each. E.g.: `new LargeArrayBuffer(compression: LargeArrayBuffer::COMPRESSION_GZIP);`. Note, that LZ4 compression requires [ext-lz4](https://github.com/kjdev/php-ext-lz4) to be installed.
 
 ### Read from the buffer
@@ -80,16 +83,22 @@ To put it in one sentence: This library uses [php://temp](https://www.php.net/ma
 
 A benchmark with 1 million measurements (consisting of DateTimeImmutable, int and float) using PHP 8.1 with 10 iterations comparing a normal array with the LargeArrayBuffer gave the following results (LargeArrayBuffer was configured with a memory limit of 128 MiB):
 
-| Action | Consumed time | Consumed memory | Buffer size |
-| :--- | ---: | ---: | ---: |
-| Fill array | 1.42 s | 490 MiB | NA |
-| Iterate over array | 0.11 s | 492 MiB | NA |
-| Fill buffer | 3.8 s | 0 B | 378.7 MiB |
-| Iterate over buffer | 2.73 s | 0 B | 378.7 MiB |
-| Fill buffer (GZIP) | 33.22 s | 0 B | 192.5 MiB |
-| Iterate over buffer (GZIP) | 5.84 s | 0 B | 192.5 MiB |
-| Fill buffer (LZ4) | 3.8 s | 0 B | 241 MiB |
-| Iterate over buffer (LZ4) | 2.75 s | 0 B | 241 MiB |
+| Action | Serializer | Compression | Consumed time | Consumed memory | Buffer size |
+| :--- | :--- | :--- | ---: | ---: | ---: |
+| Fill array | none | none | 1.57 s | 490.0 MiB | NA |
+| Iterate over array | none | none | 0.27 s | 492.0 MiB | NA |
+| Fill buffer | PHP | none | 4.27 s | 0 B | 378.7 MiB |
+| Iterate over buffer | PHP | none | 2.85 s | 0 B | 378.7 MiB |
+| Fill buffer | PHP | GZIP | 24.76 s | 0 B | 192.5 MiB |
+| Iterate over buffer | PHP | GZIP | 6.79 s | 0 B | 192.5 MiB |
+| Fill buffer | PHP | LZ4 | 4.89 s | 0 B | 241.0 MiB |
+| Iterate over buffer | PHP | LZ4 | 2.93 s | 0 B | 241.0 MiB |
+| Fill buffer | igbinary | none | 4.26 s | 0 B | 319.1 MiB |
+| Iterate over buffer | igbinary | none | 3.41 s | 0 B | 319.1 MiB |
+| Fill buffer | igbinary | GZIP | 21.50 s | 0 B | 173.2 MiB |
+| Iterate over buffer | igbinary | GZIP | 4.80 s | 0 B | 173.2 MiB |
+| Fill buffer | igbinary | LZ4 | 4.38 s | 0 B | 195.1 MiB |
+| Iterate over buffer | igbinary | LZ4 | 3.17 s | 0 B | 195.1 MiB |
 
 Note: 
 
