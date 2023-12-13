@@ -31,7 +31,11 @@ There are pretty much no dependencies with some exceptions:
 ```php
 $pdo = new PDO(/* your database credentials */);
 $stmt = $pdo->query('SELECT * FROM SomeDatabaseTable', PDO::FETCH_ASSOC);
-$buffer = new LargeArrayBuffer();
+
+$buffer = new LargeArrayBuffer();       // explicit use of LargeArrayBuffer
+$buffer = new ArrayBuffer(1000);        // wrapper using `array` until given threshold (item count) is reached,
+                                        // then switching to LargeArrayBuffer
+
 while(($dataset = $stmt->fetch()) !== false){  // load one dataset at a time
     $buffer->push($dataset);    // push this dataset to the buffer
 }

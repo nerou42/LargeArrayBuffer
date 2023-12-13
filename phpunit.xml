@@ -1,22 +1,22 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<phpunit 
-    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:noNamespaceSchemaLocation="https://schema.phpunit.de/9.3/phpunit.xsd" 
-    colors="false" 
-    stderr="true" 
-    bootstrap="vendor/autoload.php" 
-    convertErrorsToExceptions="true" 
-    convertNoticesToExceptions="true" 
-    convertWarningsToExceptions="true" 
-    defaultTestSuite="test">
-  <coverage ignoreDeprecatedCodeUnits="true"><!-- pathCoverage="true" -->
-    <include>      
-      <directory>src</directory>
-    </include>
+<phpunit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+        xsi:noNamespaceSchemaLocation="https://schema.phpunit.de/10.5/phpunit.xsd" 
+        colors="false" 
+        stderr="true" 
+        bootstrap="vendor/autoload.php" 
+        defaultTestSuite="test" 
+        cacheDirectory=".phpunit.cache">
+  <coverage ignoreDeprecatedCodeUnits="true">
+    <!-- pathCoverage="true" -->
   </coverage>
   <testsuites>
     <testsuite name="test">
       <directory>test</directory>
     </testsuite>
   </testsuites>
+  <source>
+    <include>
+      <directory>src</directory>
+    </include>
+  </source>
 </phpunit>

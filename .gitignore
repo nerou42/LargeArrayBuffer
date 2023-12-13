@@ -2,7 +2,7 @@
 /.project
 /.settings
 
-/.phpunit.result.cache
+/.phpunit.cache
 /.phpcs-cache
 
 /composer.lock

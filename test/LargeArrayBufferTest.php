@@ -11,7 +11,7 @@ use PHPUnit\Framework\TestCase;
  */
 class LargeArrayBufferTest extends TestCase {
   
-  private function getObject(): object {
+  private static function getObject(): object {
     $o = new \stdClass();
     $o->foo = 'hello world!'.PHP_EOL;
     $o->bar = new \DateTimeImmutable();
@@ -31,8 +31,8 @@ class LargeArrayBufferTest extends TestCase {
     $this->assertEquals(0, $runs);
   }
   
-  public function provideObject(): array {
-    $o = $this->getObject();
+  public static function provideObject(): array {
+    $o = self::getObject();
     return [
       [$o, LargeArrayBuffer::SERIALIZER_PHP, LargeArrayBuffer::COMPRESSION_NONE],
       [$o, LargeArrayBuffer::SERIALIZER_PHP, LargeArrayBuffer::COMPRESSION_GZIP],
@@ -54,7 +54,7 @@ class LargeArrayBufferTest extends TestCase {
    * @requires extension igbinary
    */
   public function testReadWriteIgbinary(): void {
-    $o = $this->getObject();
+    $o = self::getObject();
     $buf = new LargeArrayBuffer(serializer: LargeArrayBuffer::SERIALIZER_IGBINARY);
     $buf->push($o);
     $buf->rewind();
@@ -66,7 +66,7 @@ class LargeArrayBufferTest extends TestCase {
    * @requires extension lz4
    */
   public function testReadWriteLZ4(): void {
-    $o = $this->getObject();
+    $o = self::getObject();
     $buf = new LargeArrayBuffer(compression: LargeArrayBuffer::COMPRESSION_LZ4);
     $buf->push($o);
     $buf->rewind();

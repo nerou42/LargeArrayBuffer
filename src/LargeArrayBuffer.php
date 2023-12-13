@@ -4,12 +4,11 @@ declare(strict_types=1);
 namespace LargeArrayBuffer;
 
 /**
- * @author Andreas Wahlen
  * @template E of object|array|scalar|null
- * @implements \Iterator<int<0, max>, E>
- * @psalm-suppress TooManyTemplateParams
+ * @implements ArrayBufferInterface<E>
+ * @author Andreas Wahlen
  */
-class LargeArrayBuffer implements \Iterator, \Countable {
+class LargeArrayBuffer implements ArrayBufferInterface {
 
   public const SERIALIZER_PHP = 1;
   public const SERIALIZER_IGBINARY = 2;
@@ -49,6 +48,7 @@ class LargeArrayBuffer implements \Iterator, \Countable {
 
   /**
    * @param int $maxMemoryMiB maximum memory usage in MiB, when more data is pushed, disk space is used
+   * @psalm-param int<1,max> $maxMemoryMiB
    * @psalm-param self::SERIALIZER_* $serializer
    * @psalm-param self::COMPRESSION_* $compression
    * @throws \InvalidArgumentException if an unsupported serialization was requested
