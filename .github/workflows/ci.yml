@@ -44,11 +44,9 @@ jobs:
           - "8.0"
           - "8.1"
           - "8.2"
+          - "8.3"
         experimental: 
           - false
-        #include: 
-        #  - php: "8.3"
-        #    experimental: true
 
     name: "Test: PHP ${{ matrix.php }}"
     continue-on-error: ${{ matrix.experimental }}
@@ -66,6 +64,6 @@ jobs:
           php_version: "${{ matrix.php }}"
       - uses: php-actions/phpunit@v3
         with:
-          version: 9
+          version: 10
           php_version: "${{ matrix.php }}"
           args: --coverage-text
