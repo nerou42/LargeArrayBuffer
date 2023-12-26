@@ -40,16 +40,17 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        php: 
-          - "8.0"
-          - "8.1"
-          - "8.2"
-          - "8.3"
-        experimental: 
-          - false
+        php:
+          - version: "8.0"
+            phpunit: "9" 
+          - version: "8.1"
+            phpunit: "10"
+          - version: "8.2"
+            phpunit: "10"
+          - version: "8.3"
+            phpunit: "10"
 
-    name: "Test: PHP ${{ matrix.php }}"
-    continue-on-error: ${{ matrix.experimental }}
+    name: "Test: PHP ${{ matrix.php.version }}"
 
     steps:
       - uses: actions/checkout@v3
@@ -61,9 +62,12 @@ jobs:
       - uses: php-actions/composer@v6
         with:
           dev: no
-          php_version: "${{ matrix.php }}"
+          php_version: "${{ matrix.php.version }}"
       - uses: php-actions/phpunit@v3
+        env:
+          XDEBUG_MODE: coverage
         with:
-          version: 10
-          php_version: "${{ matrix.php }}"
+          version: "${{ matrix.php.phpunit }}"
+          php_version: "${{ matrix.php.version }}"
+          php_extensions: xdebug
           args: --coverage-text
