@@ -1,7 +1,9 @@
 # LargeArrayBuffer
 
 [![License](http://poser.pugx.org/nerou/large-array-buffer/license)](https://packagist.org/packages/nerou/large-array-buffer)
+[![PHP Version Require](http://poser.pugx.org/nerou/large-array-buffer/require/php)](https://packagist.org/packages/nerou/large-array-buffer)
 [![Version](http://poser.pugx.org/nerou/large-array-buffer/version)](https://packagist.org/packages/nerou/large-array-buffer)
+[![Psalm Type Coverage](https://shepherd.dev/github/nerou42/LargeArrayBuffer/coverage.svg)](https://packagist.org/packages/nerou/large-array-buffer)
 
 ## This is for you, if...
 

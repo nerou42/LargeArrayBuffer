@@ -13,7 +13,7 @@ jobs:
     name: Coding Standard
     
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - name: Cache Composer dependencies
         uses: actions/cache@v3
         with:
@@ -31,10 +31,12 @@ jobs:
     
     steps:
       - name: Checkout code
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
 
       - name: Psalm
         uses: docker://ghcr.io/psalm/psalm-github-actions
+        with:
+          args: --shepherd
     
   test:
     runs-on: ubuntu-latest
@@ -53,7 +55,7 @@ jobs:
     name: "Test: PHP ${{ matrix.php.version }}"
 
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - name: Cache Composer dependencies
         uses: actions/cache@v3
         with:
