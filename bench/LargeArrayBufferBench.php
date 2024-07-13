@@ -24,7 +24,8 @@ class LargeArrayBufferBench {
     return new Measurement(
         (new \DateTimeImmutable())->sub(new \DateInterval('PT'.$index.'H')),
         $index % 500,
-        random_int(-1_000_000, 1_000_000) / 1000);;
+        random_int(-1_000_000, 1_000_000) / 1000
+    );
   }
   
   public function arrayMeasurementsFill(): array {
