@@ -115,7 +115,7 @@ class LargeArrayBuffer implements ArrayBufferInterface {
     }
     $line = fgets($this->stream);
     if($line === false) {
-      throw new \RuntimeException('could not read line from php://temp');
+      throw new \RuntimeException('could not read line from php://temp at index '.$this->index.' of '.$this->count.' items');
     }
     if(strrpos($line, "\n") === strlen($line) - 1){
       $line = substr($line, 0, strlen($line) - 1);  // cut off line break
