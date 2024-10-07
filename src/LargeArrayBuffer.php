@@ -109,17 +109,20 @@ class LargeArrayBuffer implements ArrayBufferInterface {
    * @throws \RuntimeException if unable to read from php://temp
    */
   public function next(): void {
-    if(feof($this->stream) || $this->count === 0) {   // stream is not initialized before first write
+    if(feof($this->stream) || $this->count === $this->index) {   // if nothing to read, no data left
       $this->current = null;
       return;
     }
     $line = fgets($this->stream);
     if($line === false) {
-      throw new \RuntimeException('could not read line from php://temp at index '.$this->index.' of '.$this->count.' items');
+      $this->current = null;
+      if(feof($this->stream)){
+        return;
+      } else {
+        throw new \RuntimeException('could not read line from php://temp at index '.$this->index.' of '.$this->count.' items');
+      }
     }
-    if(strrpos($line, "\n") === strlen($line) - 1){
-      $line = substr($line, 0, strlen($line) - 1);  // cut off line break
-    }
+    $line = substr($line, 0, strlen($line) - 1);  // cut off line break
     $compressed = stripcslashes($line);
     /** @var string|false $serialized */
     $serialized = match($this->compression){
