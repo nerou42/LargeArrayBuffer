@@ -14,7 +14,8 @@
     "suggest": {
         "ext-json": "Requirement of toJSONFile() method",
         "ext-lz4": "To enable support of LZ4 compression",
-        "ext-igbinary": "To enable support for igbinary serializer"
+        "ext-igbinary": "To enable support for igbinary serializer",
+        "ext-msgpack": "To enable support for msgpack serializer"
     },
     "require": {
         "php": ">=8.0"
