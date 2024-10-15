@@ -56,7 +56,10 @@ class LargeArrayBufferTest extends TestCase {
     }
   }
   
-  #[DataProvider('provideConfig')]
+  /**
+   * @dataProvider provideConfig
+   */
+  //#[DataProvider('provideConfig')]
   public function testReadWrite(int $serializer, int $compression): void {
     $o = self::getObject();
     $buf = new LargeArrayBuffer(serializer: $serializer, compression: $compression);
@@ -66,7 +69,10 @@ class LargeArrayBufferTest extends TestCase {
     $this->assertEquals($o, $buf->current());
   }
   
-  #[DataProvider('provideConfig')]
+  /**
+   * @dataProvider provideConfig
+   */
+  //#[DataProvider('provideConfig')]
   public function testLoop(int $serializer, int $compression): void {
     $count = 1500;
     $buf = new LargeArrayBuffer(serializer: $serializer, compression: $compression);
