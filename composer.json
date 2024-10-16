@@ -1,6 +1,6 @@
 {
     "name": "nerou/large-array-buffer",
-    "version": "1.0.0",
+    "version": "1.0.1",
     "type": "library",
     "license": "MIT",
     "authors": [
@@ -13,7 +13,8 @@
     ],
     "suggest": {
         "ext-json": "Requirement of toJSONFile() method",
-        "ext-lz4": "To enable support of LZ4 compression",
+        "ext-zlib": "To enable support for GZIP compression",
+        "ext-lz4": "To enable support for LZ4 compression",
         "ext-igbinary": "To enable support for igbinary serializer"
     },
     "require": {
