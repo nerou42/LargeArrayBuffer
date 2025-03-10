@@ -5,7 +5,6 @@ namespace LargeArrayBuffer\Tests;
 
 use LargeArrayBuffer\LargeArrayBuffer;
 use PHPUnit\Framework\TestCase;
-use PHPUnit\Framework\Attributes\DataProvider;
 
 /**
  * @author Andreas Wahlen
