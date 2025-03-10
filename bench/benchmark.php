@@ -97,7 +97,7 @@ for($i = 0; $i < ITERATIONS; $i++){
   unset($buf);
   
   // buffer with LZ4
-  if(function_exists('lz4_compress')){
+  if(extension_loaded('lz4')){
     $start = microtime(true);
     $memBefore = memory_get_usage(true);
     $buf = new LargeArrayBuffer(128, compression: LargeArrayBuffer::COMPRESSION_LZ4);
@@ -118,7 +118,7 @@ for($i = 0; $i < ITERATIONS; $i++){
     unset($buf);
   }
   
-  if(function_exists('igbinary_serialize')){
+  if(extension_loaded('igbinary')){
     // normal buffer with igbinary
     $start = microtime(true);
     $memBefore = memory_get_usage(true);
@@ -160,7 +160,7 @@ for($i = 0; $i < ITERATIONS; $i++){
     unset($buf);
     
     // buffer with LZ4 and igbinary
-    if(function_exists('lz4_compress')){
+    if(extension_loaded('lz4')){
       $start = microtime(true);
       $memBefore = memory_get_usage(true);
       $buf = new LargeArrayBuffer(128, serializer: LargeArrayBuffer::SERIALIZER_IGBINARY, compression: LargeArrayBuffer::COMPRESSION_LZ4);
@@ -182,6 +182,70 @@ for($i = 0; $i < ITERATIONS; $i++){
     }
   }
   
+  if(extension_loaded('msgpack')){
+    // normal buffer with msgpack
+    $start = microtime(true);
+    $memBefore = memory_get_usage(true);
+    $buf = new LargeArrayBuffer(128, serializer: LargeArrayBuffer::SERIALIZER_MSGPACK);
+    $bench->bufferMeasurementsFill($buf);
+    $metrics['fill_buffer_mp'][] = [
+      'time' => microtime(true) - $start,
+      'mem' => memory_get_usage(true) - $memBefore,
+      'size' => $buf->getSize()
+    ];
+    
+    $start = microtime(true);
+    $bench->bufferMeasurementsIterate($buf);
+    $metrics['iterate_buffer_mp'][] = [
+      'time' => microtime(true) - $start,
+      'mem' => memory_get_usage(true) - $memBefore,
+      'size' => $buf->getSize()
+    ];
+    unset($buf);
+    
+    // buffer with GZIP and msgpack
+    $start = microtime(true);
+    $memBefore = memory_get_usage(true);
+    $buf = new LargeArrayBuffer(128, serializer: LargeArrayBuffer::SERIALIZER_MSGPACK, compression: LargeArrayBuffer::COMPRESSION_GZIP);
+    $bench->bufferMeasurementsFill($buf);
+    $metrics['fill_buffer_gz_mp'][] = [
+      'time' => microtime(true) - $start,
+      'mem' => memory_get_usage(true) - $memBefore,
+      'size' => $buf->getSize()
+    ];
+    
+    $start = microtime(true);
+    $bench->bufferMeasurementsIterate($buf);
+    $metrics['iterate_buffer_gz_mp'][] = [
+      'time' => microtime(true) - $start,
+      'mem' => memory_get_usage(true) - $memBefore,
+      'size' => $buf->getSize()
+    ];
+    unset($buf);
+    
+    // buffer with LZ4 and msgpack
+    if(extension_loaded('lz4')){
+      $start = microtime(true);
+      $memBefore = memory_get_usage(true);
+      $buf = new LargeArrayBuffer(128, serializer: LargeArrayBuffer::SERIALIZER_MSGPACK, compression: LargeArrayBuffer::COMPRESSION_LZ4);
+      $bench->bufferMeasurementsFill($buf);
+      $metrics['fill_buffer_lz4_mp'][] = [
+        'time' => microtime(true) - $start,
+        'mem' => memory_get_usage(true) - $memBefore,
+        'size' => $buf->getSize()
+      ];
+      
+      $start = microtime(true);
+      $bench->bufferMeasurementsIterate($buf);
+      $metrics['iterate_buffer_lz4_mp'][] = [
+        'time' => microtime(true) - $start,
+        'mem' => memory_get_usage(true) - $memBefore,
+        'size' => $buf->getSize()
+      ];
+      unset($buf);
+    }
+  }
+  
   unset($bench);
 }
 
@@ -191,17 +255,27 @@ printResult('Fill buffer', $metrics, 'fill_buffer', 4, true);
 printResult('Iterate over buffer', $metrics, 'iterate_buffer', 3, true);
 printResult('Fill buffer (GZIP)', $metrics, 'fill_buffer_gz', 3, true);
 printResult('Iterate over buffer (GZIP)', $metrics, 'iterate_buffer_gz', 2, true);
-if(function_exists('lz4_compress')){
+if(extension_loaded('lz4')){
   printResult('Fill buffer (LZ4)', $metrics, 'fill_buffer_lz4', 3, true);
   printResult('Iterate over buffer (LZ4)', $metrics, 'iterate_buffer_lz4', 2, true);
 }
-if(function_exists('igbinary_serialize')){
+if(extension_loaded('igbinary')){
   printResult('Fill buffer (igbinary)', $metrics, 'fill_buffer_ig', 2, true);
   printResult('Iterate over buffer (igbinary)', $metrics, 'iterate_buffer_ig', 1, true);
   printResult('Fill buffer (GZIP, igbinary)', $metrics, 'fill_buffer_gz_ig', 2, true);
   printResult('Iterate over buffer (GZIP, igbinary)', $metrics, 'iterate_buffer_gz_ig', 1, true);
-  if(function_exists('lz4_compress')){
+  if(extension_loaded('lz4')){
     printResult('Fill buffer (LZ4, igbinary)', $metrics, 'fill_buffer_lz4_ig', 2, true);
     printResult('Iterate over buffer (LZ4, igbinary)', $metrics, 'iterate_buffer_lz4_ig', 1, true);
+  }
+}
+if(extension_loaded('msgpack')){
+  printResult('Fill buffer (msgpack)', $metrics, 'fill_buffer_mp', 2, true);
+  printResult('Iterate over buffer (msgpack)', $metrics, 'iterate_buffer_mp', 1, true);
+  printResult('Fill buffer (GZIP, msgpack)', $metrics, 'fill_buffer_gz_mp', 2, true);
+  printResult('Iterate over buffer (GZIP, msgpack)', $metrics, 'iterate_buffer_gz_mp', 1, true);
+  if(extension_loaded('lz4')){
+    printResult('Fill buffer (LZ4, msgpack)', $metrics, 'fill_buffer_lz4_mp', 2, true);
+    printResult('Iterate over buffer (LZ4, msgpack)', $metrics, 'iterate_buffer_lz4_mp', 1, true);
   }
 }

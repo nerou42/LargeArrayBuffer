@@ -12,6 +12,7 @@ class LargeArrayBuffer implements ArrayBufferInterface {
 
   public const SERIALIZER_PHP = 1;
   public const SERIALIZER_IGBINARY = 2;
+  public const SERIALIZER_MSGPACK = 3;
 
   public const COMPRESSION_NONE = 0;
   public const COMPRESSION_GZIP = 1;
@@ -57,13 +58,16 @@ class LargeArrayBuffer implements ArrayBufferInterface {
    */
   public function __construct(int $maxMemoryMiB = 1024, int $serializer = self::SERIALIZER_PHP, int $compression = self::COMPRESSION_NONE) {
     $this->serializer = $serializer;
-    if($this->serializer === self::SERIALIZER_IGBINARY && !function_exists('igbinary_serialize')){
-      throw new \InvalidArgumentException('igbinary serializer was requested, but ext-igbinary is not installed');
+    if($this->serializer === self::SERIALIZER_IGBINARY && !extension_loaded('igbinary')){
+      throw new \InvalidArgumentException('igbinary serializer was requested, but ext-igbinary is not loaded');
+    }
+    if($this->serializer === self::SERIALIZER_MSGPACK && !extension_loaded('msgpack')){
+      throw new \InvalidArgumentException('msgpack serializer was requested, but ext-msgpack is not loaded');
     }
       
     $this->compression = $compression;
-    if($this->compression === self::COMPRESSION_LZ4 && !function_exists('lz4_compress')){
-      throw new \InvalidArgumentException('LZ4 compression was requested, but ext-lz4 is not installed');
+    if($this->compression === self::COMPRESSION_LZ4 && !extension_loaded('lz4')){
+      throw new \InvalidArgumentException('LZ4 compression was requested, but ext-lz4 is not loaded');
     }
       
     $stream = fopen('php://temp/maxmemory:'.($maxMemoryMiB * 1024 * 1024), 'r+');
@@ -75,13 +79,17 @@ class LargeArrayBuffer implements ArrayBufferInterface {
 
   /**
    * @psalm-param E $item
-   * @throws \RuntimeException if unable to write to php://temp
+   * @throws \RuntimeException if unable to write to php://temp, the serialization failed or the compression failed
    */
   public function push(mixed $item): void {
     $serialized = match($this->serializer){
       self::SERIALIZER_IGBINARY => igbinary_serialize($item),
+      self::SERIALIZER_MSGPACK => msgpack_serialize($item),
       default => serialize($item)
     };
+    if($serialized === false){
+      throw new \RuntimeException('failed to serialize data');
+    }
     /** @var string|false $compressed */
     $compressed = match($this->compression){
       self::COMPRESSION_GZIP => gzdeflate($serialized),
@@ -148,6 +156,7 @@ class LargeArrayBuffer implements ArrayBufferInterface {
     /** @psalm-var E $res */
     $res = match($this->serializer){
       self::SERIALIZER_IGBINARY => igbinary_unserialize($this->current),
+      self::SERIALIZER_MSGPACK => msgpack_unserialize($this->current),
       default => unserialize($this->current)
     };
     return $res;
@@ -213,7 +222,14 @@ class LargeArrayBuffer implements ArrayBufferInterface {
       if(($flags & JSON_PRETTY_PRINT) > 0){
         fwrite($stream, PHP_EOL.'    ');
       }
-      fwrite($stream, json_encode($item, $flags, $depth));
+      $json = json_encode($item, $flags, $depth);
+      if($json === false){
+        if(is_string($dest)){
+          fclose($stream);
+        }
+        throw new \RuntimeException('failed to serialize data');
+      }
+      fwrite($stream, $json);
       fflush($stream);
       $first = false;
     }

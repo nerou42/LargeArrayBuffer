@@ -26,6 +26,7 @@ There are pretty much no dependencies with some exceptions:
 
 - If you want to use the `toJSONFile()` method, you need to install `ext-json` (PHP's PECL JSON extension) as well.
 - If you want to use the igbinary serializer, `ext-igbinary` is required. See [php-ext-igbinary](https://github.com/igbinary/igbinary).
+- If you want to use the msgpack serializer, `ext-msgpack` is required. See [php-ext-msgpack](https://github.com/msgpack/msgpack-php).
 - If you want to use LZ4 compression, `ext-lz4` is required. See [php-ext-lz4](https://github.com/kjdev/php-ext-lz4).
 
 ## Usage
@@ -55,9 +56,9 @@ The constructor of `LargeArrayBuffer` provides some options:
 
 1. You can set the threshold when to move the data to disk. When pushing data to the buffer, it is stored in memory until it gets too large.
     E.g.: `new LargeArrayBuffer(512);` to set a 512 MiB threshold. 
-1. You can choose either the PHP serializer or the [igbinary](https://github.com/igbinary/igbinary) serializer (PHP serializer is default).
+1. You can choose either the PHP serializer, the [igbinary](https://github.com/igbinary/igbinary) serializer or the [msgpack](https://github.com/msgpack/msgpack-php) serializer (PHP serializer is default).
     E.g.: `new LargeArrayBuffer(serializer: LargeArrayBuffer::COMPRESSION_IGBINARY);`
-1. You can enable GZIP or LZ4 compression for the serialized items. Although this is recommended only if your items are pretty big like > 1 KiB each. E.g.: `new LargeArrayBuffer(compression: LargeArrayBuffer::COMPRESSION_GZIP);`. Note, that LZ4 compression requires [ext-lz4](https://github.com/kjdev/php-ext-lz4) to be installed.
+1. You can enable GZIP or LZ4 compression for the serialized items. Although this is recommended only if your items are pretty big like > 1 KiB each. E.g.: `new LargeArrayBuffer(compression: LargeArrayBuffer::COMPRESSION_GZIP);`. Note, that LZ4 compression requires [ext-lz4](https://github.com/kjdev/php-ext-lz4) to be loaded.
 
 ### Read from the buffer
 

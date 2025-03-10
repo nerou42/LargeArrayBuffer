@@ -5,6 +5,7 @@ namespace LargeArrayBuffer\Tests;
 
 use LargeArrayBuffer\LargeArrayBuffer;
 use PHPUnit\Framework\TestCase;
+use PHPUnit\Framework\Attributes\DataProvider;
 
 /**
  * @author Andreas Wahlen
@@ -31,18 +32,36 @@ class LargeArrayBufferTest extends TestCase {
     $this->assertEquals(0, $runs);
   }
   
-  public static function provideObject(): array {
-    $o = self::getObject();
-    return [
-      [$o, LargeArrayBuffer::SERIALIZER_PHP, LargeArrayBuffer::COMPRESSION_NONE],
-      [$o, LargeArrayBuffer::SERIALIZER_PHP, LargeArrayBuffer::COMPRESSION_GZIP],
+  public static function provideConfig(): \Generator {
+    $serializers = [
+      'PHP' => LargeArrayBuffer::SERIALIZER_PHP
     ];
+    if(extension_loaded('igbinary')){
+      $serializers['IGBinary'] = LargeArrayBuffer::SERIALIZER_IGBINARY;
+    }
+    if(extension_loaded('msgpack')){
+      $serializers['MsgPack'] = LargeArrayBuffer::SERIALIZER_MSGPACK;
+    }
+    $compressors = [
+      'none' => LargeArrayBuffer::COMPRESSION_NONE,
+      'GZIP' => LargeArrayBuffer::COMPRESSION_GZIP
+    ];
+    if(extension_loaded('lz4')){
+      $compressors['LZ4'] = LargeArrayBuffer::COMPRESSION_LZ4;
+    }
+    foreach($serializers as $s => $serializer){
+      foreach($compressors as $c => $compressor){
+        yield $s.'-'.$c => [$serializer, $compressor];
+      }
+    }
   }
   
   /**
-   * @dataProvider provideObject
+   * @dataProvider provideConfig
    */
-  public function testReadWrite(object $o, int $serializer, int $compression): void {
+  //#[DataProvider('provideConfig')]
+  public function testReadWrite(int $serializer, int $compression): void {
+    $o = self::getObject();
     $buf = new LargeArrayBuffer(serializer: $serializer, compression: $compression);
     $buf->push($o);
     $buf->rewind();
@@ -51,32 +70,12 @@ class LargeArrayBufferTest extends TestCase {
   }
   
   /**
-   * @requires extension igbinary
+   * @dataProvider provideConfig
    */
-  public function testReadWriteIgbinary(): void {
-    $o = self::getObject();
-    $buf = new LargeArrayBuffer(serializer: LargeArrayBuffer::SERIALIZER_IGBINARY);
-    $buf->push($o);
-    $buf->rewind();
-    $buf->next();
-    $this->assertEquals($o, $buf->current());
-  }
-  
-  /**
-   * @requires extension lz4
-   */
-  public function testReadWriteLZ4(): void {
-    $o = self::getObject();
-    $buf = new LargeArrayBuffer(compression: LargeArrayBuffer::COMPRESSION_LZ4);
-    $buf->push($o);
-    $buf->rewind();
-    $buf->next();
-    $this->assertEquals($o, $buf->current());
-  }
-  
-  public function testLoop(): void {
-    $count = 15;
-    $buf = new LargeArrayBuffer();
+  //#[DataProvider('provideConfig')]
+  public function testLoop(int $serializer, int $compression): void {
+    $count = 1500;
+    $buf = new LargeArrayBuffer(serializer: $serializer, compression: $compression);
     $objs = [];
     for($i=0;$i<$count;$i++){
       $o = new \stdClass();
@@ -85,22 +84,18 @@ class LargeArrayBufferTest extends TestCase {
       $buf->push($o);
     }
     $this->assertCount($count, $buf);
-    $runs = 0;
+    $expIdx = 0;
     foreach($buf as $idx => $item){
-      $runs++;
-      $this->assertGreaterThanOrEqual(0, $idx);
-      $this->assertLessThan($count, $idx);
+      $this->assertEquals($expIdx, $idx);
+      $this->assertEquals($item->idx, $idx);
       $this->assertEquals($objs[$idx], $item);
+      $expIdx++;
     }
-    $this->assertEquals($count, $runs);
+    $this->assertEquals($count, $expIdx);
   }
   
   public function testToJSON(): void {
-    $o = new \stdClass();
-    $o->foo = 'hello world!'.PHP_EOL;
-    $o->bar = new \DateTimeImmutable();
-    $o->a = ['test', 123];
-    $o->str = 'hello world!\\n';
+    $o = self::getObject();
     
     $buf = new LargeArrayBuffer();
     $buf->push($o);
