@@ -14,6 +14,13 @@ You can still iterate over it as if it was a normal array.
 
 One typical use case would be to load a lot of datasets from a database at once. (There are reasons to prefer this over running multiple queries.) See *Usage* below for an example for this use case using this library.
 
+In general, you might want to try the following PHP-builtin solutions first:
+
+- [SplFixedArray](https://www.php.net/manual/class.splfixedarray.php): By being of fixed length, this saves some memory compared to traditional `array`s. It behaves pretty much like `array`s do. Although the savings are not that huge compared to other solutions, it is probably the easiest to adopt.
+- [Generator](https://www.php.net/manual/language.generators.php): Instead of returning an `array` all at once, this allows to return one item after the other. Thereby a "consumer" is able to process one item after the other accordingly. One can also terminate the "generation" of further items. One of the downsides is, that a Generator can only be iterated over once. The memory consumption can be as good as constant, but this approach is quite different and therefore rather hard to adopt and not appropriate in every scenario.
+
+It should be noted, that a `LargeArrayBuffer` can be converted to both of these using `toFixedArray()` and `toGenerator()` respectively.
+
 ## Install
 
 Note: This library requires PHP 8.0+!

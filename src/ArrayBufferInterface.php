@@ -20,4 +20,15 @@ interface ArrayBufferInterface extends \Iterator, \Countable {
    * @psalm-return list<E>
    */
   public function toArray(): array;
+  
+  /**
+   * @psalm-return \SplFixedArray<E>
+   */
+  public function toFixedArray(): \SplFixedArray;
+  
+  /**
+   * @return \Generator send something other than null to terminate
+   * @psalm-return \Generator<int, E, mixed, void>
+   */
+  public function toGenerator(): \Generator;
 }

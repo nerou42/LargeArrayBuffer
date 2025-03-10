@@ -112,4 +112,36 @@ class ArrayBuffer implements ArrayBufferInterface {
       return $this->array;
     }
   }
+  
+  /**
+   * @psalm-return \SplFixedArray<E>
+   */
+  public function toFixedArray(): \SplFixedArray {
+    if($this->buffer->count() > 0){
+      return $this->buffer->toFixedArray();
+    } else {
+      $res = new \SplFixedArray(count($this->array));
+      foreach($this->array as $idx => $item){
+        $res[$idx] = $item;
+      }
+      return $res;
+    }
+  }
+  
+  /**
+   * @return \Generator send something other than null to terminate
+   * @psalm-return \Generator<int, E, mixed, void>
+   */
+  public function toGenerator(): \Generator {
+    if($this->buffer->count() > 0){
+      yield from $this->buffer->toGenerator();
+    } else {
+      foreach($this->array as $item){
+        $cmd = yield $item;
+        if($cmd !== null){
+          break;
+        }
+      }
+    }
+  }
 }
