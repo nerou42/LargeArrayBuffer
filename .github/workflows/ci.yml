@@ -37,6 +37,7 @@ jobs:
         uses: docker://ghcr.io/psalm/psalm-github-actions
         with:
           args: --shepherd
+          php_version: "8.0"
     
   test:
     runs-on: ubuntu-latest
