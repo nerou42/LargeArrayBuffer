@@ -34,10 +34,9 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Psalm
-        uses: docker://ghcr.io/psalm/psalm-github-actions
+        uses: docker://ghcr.io/psalm/psalm-github-actions:6.4.1
         with:
           args: --shepherd
-          php_version: "8.0"
     
   test:
     runs-on: ubuntu-latest

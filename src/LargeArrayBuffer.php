@@ -79,7 +79,7 @@ class LargeArrayBuffer implements ArrayBufferInterface {
 
   /**
    * @psalm-param E $item
-   * @throws \RuntimeException if unable to write to php://temp
+   * @throws \RuntimeException if unable to write to php://temp, the serialization failed or the compression failed
    */
   public function push(mixed $item): void {
     $serialized = match($this->serializer){
@@ -87,6 +87,9 @@ class LargeArrayBuffer implements ArrayBufferInterface {
       self::SERIALIZER_MSGPACK => msgpack_serialize($item),
       default => serialize($item)
     };
+    if($serialized === false){
+      throw new \RuntimeException('failed to serialize data');
+    }
     /** @var string|false $compressed */
     $compressed = match($this->compression){
       self::COMPRESSION_GZIP => gzdeflate($serialized),
@@ -219,7 +222,14 @@ class LargeArrayBuffer implements ArrayBufferInterface {
       if(($flags & JSON_PRETTY_PRINT) > 0){
         fwrite($stream, PHP_EOL.'    ');
       }
-      fwrite($stream, json_encode($item, $flags, $depth));
+      $json = json_encode($item, $flags, $depth);
+      if($json === false){
+        if(is_string($dest)){
+          fclose($stream);
+        }
+        throw new \RuntimeException('failed to serialize data');
+      }
+      fwrite($stream, $json);
       fflush($stream);
       $first = false;
     }
