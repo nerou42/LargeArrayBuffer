@@ -252,6 +252,30 @@ class LargeArrayBuffer implements ArrayBufferInterface {
     }
     return $res;
   }
+  
+  /**
+   * @psalm-return \SplFixedArray<E>
+   */
+  public function toFixedArray(): \SplFixedArray {
+    $res = new \SplFixedArray($this->count);
+    foreach($this as $idx => $item){
+      $res[$idx] = $item;
+    }
+    return $res;
+  }
+  
+  /**
+   * @return \Generator send something other than null to terminate
+   * @psalm-return \Generator<int, E, mixed, void>
+   */
+  public function toGenerator(): \Generator {
+    foreach($this as $item){
+      $cmd = yield $item;
+      if($cmd !== null){
+        break;
+      }
+    }
+  }
 
   public function __destruct() {
     /**

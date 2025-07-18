@@ -5,7 +5,6 @@ namespace LargeArrayBuffer\Tests;
 
 use LargeArrayBuffer\LargeArrayBuffer;
 use PHPUnit\Framework\TestCase;
-use PHPUnit\Framework\Attributes\DataProvider;
 
 /**
  * @author Andreas Wahlen
@@ -77,7 +76,7 @@ class LargeArrayBufferTest extends TestCase {
     $count = 1500;
     $buf = new LargeArrayBuffer(serializer: $serializer, compression: $compression);
     $objs = [];
-    for($i=0;$i<$count;$i++){
+    for($i = 0; $i < $count; $i++){
       $o = new \stdClass();
       $o->idx = $i;
       $objs[] = $o;
@@ -106,5 +105,44 @@ class LargeArrayBufferTest extends TestCase {
     $json = stream_get_contents($stream);
     fclose($stream);
     $this->assertEquals(json_encode([$o, $o], JSON_THROW_ON_ERROR), $json);
+  }
+  
+  public function provideItems(): array {
+    return [
+      [['hello world!', 'just another string']]
+    ];
+  }
+  
+  /**
+   * @dataProvider provideItems
+   */
+  public function testToArray(array $items): void {
+    $buf = new LargeArrayBuffer();
+    foreach($items as $item){
+      $buf->push($item);
+    }
+    $this->assertSame($items, $buf->toArray());
+  }
+  
+  /**
+   * @dataProvider provideItems
+   */
+  public function testToFixedArray(array $items): void {
+    $buf = new LargeArrayBuffer();
+    foreach($items as $item){
+      $buf->push($item);
+    }
+    $this->assertSame($items, $buf->toFixedArray()->toArray());
+  }
+  
+  /**
+   * @dataProvider provideItems
+   */
+  public function testToGenerator(array $items): void {
+    $buf = new LargeArrayBuffer();
+    foreach($items as $item){
+      $buf->push($item);
+    }
+    $this->assertSame($items, iterator_to_array($buf->toGenerator()));
   }
 }
