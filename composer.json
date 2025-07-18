@@ -1,6 +1,6 @@
 {
     "name": "nerou/large-array-buffer",
-    "version": "1.1.0",
+    "version": "1.2.0",
     "type": "library",
     "license": "MIT",
     "authors": [
@@ -53,7 +53,7 @@
         ]
     },
     "scripts-descriptions": {
-        "phpcs": "Runs CodeSniffer for coding style tests.", 
+        "phpcs": "Runs CodeSniffer for coding style tests.",
         "phpcbf": "Fixes marked violations found by phpcs/CodeSniffer.",
         "phpunit": "Runs unit/integration tests.",
         "phpcpd": "Runs copied code finder.",
