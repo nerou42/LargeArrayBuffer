@@ -13,7 +13,7 @@ jobs:
     name: Coding Standard
     
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - name: Cache Composer dependencies
         uses: actions/cache@v4
         with:
@@ -31,10 +31,10 @@ jobs:
     
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
       - name: Psalm
-        uses: docker://ghcr.io/psalm/psalm-github-actions:6.4.1
+        uses: docker://ghcr.io/psalm/psalm-github-actions
         with:
           args: --shepherd
     
@@ -51,11 +51,13 @@ jobs:
             phpunit: "10"
           - version: "8.3"
             phpunit: "10"
+          - version: "8.4"
+            phpunit: "10"
 
     name: "Test: PHP ${{ matrix.php.version }}"
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - name: Cache Composer dependencies
         uses: actions/cache@v4
         with:
@@ -65,7 +67,7 @@ jobs:
         with:
           dev: no
           php_version: "${{ matrix.php.version }}"
-      - uses: php-actions/phpunit@v3
+      - uses: php-actions/phpunit@v4
         env:
           XDEBUG_MODE: coverage
         with:

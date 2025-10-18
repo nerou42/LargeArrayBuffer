@@ -22,6 +22,7 @@ class ArrayBufferTest extends TestCase {
   /**
    * @dataProvider provideTestData
    */
+  //#[DataProvider('provideTestData')]
   public function testBuffer(int $items, int $threshold): void {
     $o = new \stdClass();
     $o->foo = 'hello world!'.PHP_EOL;

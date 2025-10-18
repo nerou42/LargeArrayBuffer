@@ -6,6 +6,7 @@ namespace LargeArrayBuffer;
 /**
  * @template E of object|array|scalar|null
  * @implements ArrayBufferInterface<E>
+ * @api
  * @author Andreas Wahlen
  */
 class LargeArrayBuffer implements ArrayBufferInterface {

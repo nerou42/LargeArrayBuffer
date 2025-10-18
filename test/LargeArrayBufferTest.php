@@ -107,7 +107,7 @@ class LargeArrayBufferTest extends TestCase {
     $this->assertEquals(json_encode([$o, $o], JSON_THROW_ON_ERROR), $json);
   }
   
-  public function provideItems(): array {
+  public static function provideItems(): array {
     return [
       [['hello world!', 'just another string']]
     ];

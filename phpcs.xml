@@ -27,7 +27,7 @@
         <exclude name="Generic.Files.LowercasedFilename"/>
         <exclude name="Generic.Formatting.DisallowMultipleStatements"/>
         <exclude name="Generic.Formatting.MultipleStatementAlignment.NotSameWarning"/>
-        <exclude name="Generic.Formatting.NoSpaceAfterCast"/>
+        <exclude name="Generic.Formatting.MultipleStatementAlignment.NotSame"/>
         <exclude name="Generic.Formatting.SpaceBeforeCast"/>
         <exclude name="Generic.Functions.OpeningFunctionBraceBsdAllman"/>
         <exclude name="Generic.Metrics.CyclomaticComplexity"/>                  <!-- see below -->
@@ -40,10 +40,6 @@
         <exclude name="Generic.Strings.UnnecessaryStringConcat"/>
         <exclude name="Generic.WhiteSpace.DisallowSpaceIndent"/>
         <exclude name="Generic.WhiteSpace.ScopeIndent"/>                        <!-- see below -->
-        
-        <!-- temporary -->
-        <exclude name="Generic.CodeAnalysis.UnusedFunctionParameter"/>
-        <exclude name="Generic.Metrics.NestingLevel"/>
     </rule>
     <rule ref="Generic.Arrays.ArrayIndent">
         <properties>
@@ -56,6 +52,11 @@
     </rule>
     <rule ref="Generic.Commenting">
         <type>warning</type>
+    </rule>
+    <rule ref="Generic.Formatting.SpaceAfterCast">
+        <properties>
+            <property name="spacing" value="0"/>
+        </properties>
     </rule>
     <rule ref="Generic.Formatting.SpaceAfterNot">
         <properties>
@@ -105,7 +106,6 @@
     <rule ref="Squiz.Strings.DoubleQuoteUsage"/>
     <rule ref="Squiz.Strings.EchoedStrings"/>
     <rule ref="Squiz.WhiteSpace.CastSpacing"/>
-    <rule ref="Squiz.WhiteSpace.LanguageConstructSpacing"/>
     <rule ref="Squiz.WhiteSpace.ScopeKeywordSpacing"/>
     <rule ref="Squiz.WhiteSpace.SemicolonSpacing"/>
 </ruleset>

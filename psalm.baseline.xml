@@ -7,5 +7,9 @@
       <code>msgpack_serialize($item)</code>
       <code>msgpack_unserialize($this->current)</code>
     </UndefinedFunction>
+    <TooManyArguments>
+      <code>lz4_compress($serialized)</code>
+      <code>lz4_uncompress($compressed)</code>
+    </TooManyArguments>
   </file>
 </files>
