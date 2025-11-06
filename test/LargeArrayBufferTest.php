@@ -46,7 +46,7 @@ class LargeArrayBufferTest extends TestCase {
       'none' => LargeArrayBuffer::COMPRESSION_NONE,
       'GZIP' => LargeArrayBuffer::COMPRESSION_GZIP
     ];
-    if(extension_loaded('lz4')){
+    if(extension_loaded('lz4') || extension_loaded('lz4frame')){
       $compressors['LZ4'] = LargeArrayBuffer::COMPRESSION_LZ4;
     }
     foreach($serializers as $s => $serializer){

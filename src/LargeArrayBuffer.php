@@ -67,7 +67,7 @@ class LargeArrayBuffer implements ArrayBufferInterface {
     }
       
     $this->compression = $compression;
-    if($this->compression === self::COMPRESSION_LZ4 && !extension_loaded('lz4')){
+    if($this->compression === self::COMPRESSION_LZ4 && !extension_loaded('lz4') && !extension_loaded('lz4frame')){
       throw new \InvalidArgumentException('LZ4 compression was requested, but ext-lz4 is not loaded');
     }
       
