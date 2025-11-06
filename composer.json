@@ -1,6 +1,6 @@
 {
     "name": "nerou/large-array-buffer",
-    "version": "1.2.0",
+    "description": "Handle arrays with huge cardinality but small items with ease",
     "type": "library",
     "license": "MIT",
     "authors": [
@@ -22,6 +22,7 @@
         "php": ">=8.0"
     },
     "require-dev": {
+        "rector/rector": "^2.0",
         "squizlabs/php_codesniffer": "^4.0"
     },
     "prefer-stable": true,
@@ -45,11 +46,13 @@
         "psalm": "./tools/psalm --no-diff --use-baseline=psalm.baseline.xml --php-version=8.0",
         "psalm-stats": "./tools/psalm --no-diff --use-baseline=psalm.baseline.xml --php-version=8.0 --stats | grep -v 100",
         "update-psalm-baseline": "./tools/psalm --no-diff --set-baseline=psalm.baseline.xml",
+        "rector": "./vendor/bin/rector process --dry-run",
         "tests": [
             "@phpcs",
             "@phpunit",
             "@phpcpd",
-            "@psalm"
+            "@psalm",
+            "@rector"
         ]
     },
     "scripts-descriptions": {
@@ -60,6 +63,7 @@
         "psalm": "Runs static analysis.",
         "psalm-stats": "Print files with unsafe types based on psalm.",
         "update-psalm-baseline": "Updates baseline for psalm. CAUTION should not be run as a regular procedure!",
+        "rector": "Runs PHP compatibility checks and code smell analysis.",
         "tests": "Runs all available tests."
     }
 }

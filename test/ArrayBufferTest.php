@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace LargeArrayBuffer\Tests;
 
 use PHPUnit\Framework\TestCase;
+use PHPUnit\Framework\Attributes\DataProvider;
 use LargeArrayBuffer\ArrayBuffer;
 
 /**
@@ -22,7 +23,7 @@ class ArrayBufferTest extends TestCase {
   /**
    * @dataProvider provideTestData
    */
-  //#[DataProvider('provideTestData')]
+  #[DataProvider('provideTestData')]
   public function testBuffer(int $items, int $threshold): void {
     $o = new \stdClass();
     $o->foo = 'hello world!'.PHP_EOL;

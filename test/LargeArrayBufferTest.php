@@ -5,6 +5,7 @@ namespace LargeArrayBuffer\Tests;
 
 use LargeArrayBuffer\LargeArrayBuffer;
 use PHPUnit\Framework\TestCase;
+use PHPUnit\Framework\Attributes\DataProvider;
 
 /**
  * @author Andreas Wahlen
@@ -58,7 +59,7 @@ class LargeArrayBufferTest extends TestCase {
   /**
    * @dataProvider provideConfig
    */
-  //#[DataProvider('provideConfig')]
+  #[DataProvider('provideConfig')]
   public function testReadWrite(int $serializer, int $compression): void {
     $o = self::getObject();
     $buf = new LargeArrayBuffer(serializer: $serializer, compression: $compression);
@@ -71,7 +72,7 @@ class LargeArrayBufferTest extends TestCase {
   /**
    * @dataProvider provideConfig
    */
-  //#[DataProvider('provideConfig')]
+  #[DataProvider('provideConfig')]
   public function testLoop(int $serializer, int $compression): void {
     $count = 1500;
     $buf = new LargeArrayBuffer(serializer: $serializer, compression: $compression);
@@ -116,6 +117,7 @@ class LargeArrayBufferTest extends TestCase {
   /**
    * @dataProvider provideItems
    */
+  #[DataProvider('provideItems')]
   public function testToArray(array $items): void {
     $buf = new LargeArrayBuffer();
     foreach($items as $item){
@@ -127,6 +129,7 @@ class LargeArrayBufferTest extends TestCase {
   /**
    * @dataProvider provideItems
    */
+  #[DataProvider('provideItems')]
   public function testToFixedArray(array $items): void {
     $buf = new LargeArrayBuffer();
     foreach($items as $item){
@@ -138,6 +141,7 @@ class LargeArrayBufferTest extends TestCase {
   /**
    * @dataProvider provideItems
    */
+  #[DataProvider('provideItems')]
   public function testToGenerator(array $items): void {
     $buf = new LargeArrayBuffer();
     foreach($items as $item){
