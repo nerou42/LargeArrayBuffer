@@ -57,6 +57,9 @@ jobs:
             args: ""
           - version: "8.4"
             phpunit: "12"
+            args: ""
+          - version: "8.5"
+            phpunit: "12"
             args: --display-deprecations --display-phpunit-deprecations
 
     name: "Test: PHP ${{ matrix.php.version }}"
@@ -94,6 +97,6 @@ jobs:
           key: ${{ runner.os }}-${{ hashFiles('**/composer.lock') }}
       - uses: php-actions/composer@v6
         with:
-          php_version: "8.4"
+          php_version: "8.5"
       - name: Check compatibility
         run: composer rector

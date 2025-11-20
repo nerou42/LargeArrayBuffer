@@ -106,6 +106,9 @@ class ArrayBuffer implements ArrayBufferInterface {
     }
   }
   
+  /**
+   * @psalm-return list<E>
+   */
   public function toArray(): array {
     if($this->buffer->count() > 0){
       return $this->buffer->toArray();
