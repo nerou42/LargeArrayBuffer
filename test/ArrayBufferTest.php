@@ -40,7 +40,9 @@ class ArrayBufferTest extends TestCase {
       $this->assertEquals($o, $item);
     }
     $prop = new \ReflectionProperty($buf, 'buffer');
-    $prop->setAccessible(true);
+    if(version_compare(PHP_VERSION, '8.1.0', '<')) {
+      $prop->setAccessible(true);             // deprecated since PHP 8.5, necessary for PHP <8.1
+    }
     $this->assertCount($items > $threshold ? $items : 0, $prop->getValue($buf));
   }
 }
