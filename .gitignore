@@ -5,6 +5,5 @@
 /.phpunit.cache
 /.phpcs-cache
 
-/composer.lock
 /vendor
 /tools
